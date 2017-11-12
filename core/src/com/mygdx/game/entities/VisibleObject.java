@@ -3,6 +3,7 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.entities.collisionHandling.BoundingBox;
 import com.mygdx.game.entities.collisionHandling.BoundingBoxRectangle;
+import com.mygdx.game.entities.collisionHandling.EnumDirection;
 import com.mygdx.game.view.Look;
 
 public abstract class VisibleObject {
@@ -44,10 +45,9 @@ public abstract class VisibleObject {
 		return boundingBox.collidesWith(v.getBoundingBox());
 	}
 
-	public void collisionDisplace(VisibleObject v, int deltaX, int deltaY) {
-		boundingBox.displaceOther(v.getBoundingBox(), deltaX, deltaY);
+	public void collisionDisplace(VisibleObject v, EnumDirection direction) {
+		boundingBox.displaceOther(v.getBoundingBox(), direction);
 	}
-
 	public BoundingBox getBoundingBox() {
 		return boundingBox;
 	}

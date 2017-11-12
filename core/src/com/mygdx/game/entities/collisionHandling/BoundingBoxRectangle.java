@@ -15,11 +15,21 @@ public class BoundingBoxRectangle extends BoundingBox{
 
     @Override
     public void move(double x, double y) {
+		moveX(x);
+		moveY(y);
+    }
+
+    @Override
+	public void moveX(double x) {
     	x1 += x;
     	x2 += x;
+	}
+
+	@Override
+	public void moveY(double y) {
     	y1 += y;
     	y2 += y;
-    }
+	}
 
     @Override
 	public double getX() {
@@ -66,81 +76,37 @@ public class BoundingBoxRectangle extends BoundingBox{
 		return false;
     }
 
-	/** Takes two bounding boxes that collide and the direction vector (deltaX, deltaY) that box 1 was moving in when
-	 * the collision happened.
-	 * The returned vector offsets box1 such that it no longer collides with box2, Mario N64 style.
-	 * @this The collision box of the first object.
-	 * @param other The collision box of the second object.
-	 * @return The vector that offsets box1 such that it no longer collides with box2.
+	/** Handle collision between this and `other` by displacing `other` until it doesn't collide anymore.
+	 * @param other The bounding box to be displaced
+	 * @param direction The direction `other` moved in when the collision happened.
 	 */
-	@Override
-    public void displaceOther(BoundingBox other, int deltaX, int deltaY) {
-    	other.displaceVisit(this, deltaX, deltaY);
+    public void displaceOther(BoundingBox other, EnumDirection direction) {
+    	/* Switch order. We do this for double dispatching capabilities, because it makes our interface much easier to
+		 * maintain. Essentially this results in a mini-visitor-pattern.
+		 */
+		other.displaceThis(this, direction);
 	}
 
-	/* TODO: This method only works if the player moves into x and y at the exactly same speed.
-	 * "Throw" player out of wall. If the player has moved diagonally into the wall, we compare how far he has moved
-	 * into the wall to determine which edge of `other` he collided with first and adjust throwback accordingly.
+	/** Displaces `this` BoundingBoxRectangle in a way such that it doesn't collide with `other` anymore.
+	 * @this The collision that is moving in `direction` and collided with `other`.
+	 * @param other The collision box of the second (immovable) object.
+	 * @param direction The direction `this` was moving when the collision happened.
 	 */
-	@Override
-	protected void displaceVisit(BoundingBoxRectangle other, int deltaX, int deltaY) {
-		switch (deltaX) {
-			case 0:
-				switch (deltaY) {
-					case 0:
-						return;
-					case 1:
-						setY2(other.y1 - EPS);
-						return;
-					case -1:
-						setY(other.y2 + EPS);
-						return;
-				}
+	protected void displaceThis(BoundingBoxRectangle other, EnumDirection direction) {
+    	switch(direction) {
+			case UP:
+				setY2(other.y1);
 				break;
-			case 1:
-				switch (deltaY) {
-					case 0:
-						setX2(other.x1 - EPS);
-						return;
-					case -1:
-						if (x2 - other.x1 < other.y2 - y1) {
-							setX2(other.x1 - EPS);
-						} else {
-							setY(other.y2 + EPS);
-						}
-						return;
-					case 1:
-						if (x2 - other.x1 < y2 - other.y1) {
-							setX2(other.x1 - EPS);
-						} else {
-							setY2(other.y1 - EPS);
-						}
-						return;
-				}
+			case LEFT:
+				setX(other.x2);
 				break;
-			case -1:
-				switch (deltaY) {
-					case 0:
-						setX(other.x2 + EPS);
-						return;
-					case -1:
-						if (other.x2 - x1 < other.y2 - y1) {
-							setX(other.x2 + EPS);
-						} else {
-							setY(other.y2 + EPS);
-						}
-						return;
-					case 1:
-						if (other.x2 - x1 < y2 - other.y1) {
-							setX(other.x2 + EPS);
-						} else {
-							setY2(other.y1 - EPS);
-						}
-						return;
-				}
+			case DOWN:
+				setY(other.y2);
+				break;
+			case RIGHT:
+				setX2(other.x1);
 				break;
 		}
-		throw new IllegalArgumentException("Missing case or missing return/break.");
 	}
 
     public boolean isPositionInBoundingBox(double x, double y) {

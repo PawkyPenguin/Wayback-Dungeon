@@ -10,13 +10,17 @@ public abstract class BoundingBox {
 		move(c.x, c.y);
 	}
 
+	public abstract void moveX(double x);
+
+	public abstract void moveY(double y);
+
+	public abstract void displaceOther(BoundingBox b, EnumDirection direction);
+
+	protected abstract void displaceThis(BoundingBoxRectangle b, EnumDirection direction);
+
 	public abstract boolean collidesWith(BoundingBox b);
 
 	protected abstract boolean collidesVisit(BoundingBoxRectangle b);
-
-	public abstract void displaceOther(BoundingBox b, int deltaX, int deltaY);
-
-	protected abstract void displaceVisit(BoundingBoxRectangle b, int deltaX, int deltaY);
 
 	public abstract double getX();
 
