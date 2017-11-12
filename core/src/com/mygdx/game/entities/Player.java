@@ -2,22 +2,18 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ai.steer.limiters.AngularSpeedLimiter;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
+import com.mygdx.game.entities.collisionHandling.BoundingBoxRectangle;
 import com.mygdx.game.entities.tiles.FloorTile;
 import com.mygdx.game.view.LivingLook;
 import com.mygdx.game.view.spriteEnums.LookEnum;
 
-import java.util.Arrays;
-
 public class Player extends Entity {
-	final static int SPEED = 800;
+	final static int SPEED = 300;
+	final static int width = 32;
+	final static int height = 32;
 
-	public Player(float x, float y) {
+	public Player(double x, double y) {
 		super(x, y);
-		width = 32;
-		height = 32;
 	}
 
 	@Override
@@ -26,35 +22,31 @@ public class Player extends Entity {
 	}
 
 	@Override
-	protected void loadBoundingBox() {
-		Vector3 upperLeft = new Vector3(x, y, 0);
-		Vector3 lowerRight = new Vector3(x + width, y + height, 0);
-		setBoundingBox(new BoundingBox(upperLeft, lowerRight));
+	protected void makeBoundingBox(double x, double y) {
+		setBoundingBox(new BoundingBoxRectangle(x, y, x + width, y + height));
 	}
 
 	@Override
 	public void tick(double timeSinceLastFrame) {
-		float oldX = x;
-		float oldY = y;
+		int deltaX = 0;
+		int deltaY = 0;
 		if (isKeyPressed(Input.Keys.LEFT)) {
-			x -= SPEED * timeSinceLastFrame;
+			deltaX--;
 		}
 		if (isKeyPressed(Input.Keys.UP)) {
-			y += SPEED * timeSinceLastFrame;
+			deltaY++;
 		}
 		if (isKeyPressed(Input.Keys.RIGHT)) {
-			x += SPEED * timeSinceLastFrame;
+			deltaX++;
 		}
 		if (isKeyPressed(Input.Keys.DOWN)) {
-			y -= SPEED * timeSinceLastFrame;
+			deltaY--;
 		}
-		loadBoundingBox();
-		for (FloorTile[] row : getLevel().getFloor()) {
+		getBoundingBox().move(timeSinceLastFrame * deltaX * SPEED, timeSinceLastFrame * deltaY * SPEED);
+		outer: for (FloorTile[] row : getLevel().getFloor()) {
 			for (FloorTile floorTile : row) {
 				if (floorTile != null && floorTile.collidesWith(this)) {
-					this.x = oldX;
-					this.y = oldY;
-					return;
+					floorTile.collisionDisplace(this, deltaX, deltaY);
 				}
 			}
 		}

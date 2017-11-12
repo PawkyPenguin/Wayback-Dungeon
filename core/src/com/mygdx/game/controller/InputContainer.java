@@ -20,11 +20,9 @@ public class InputContainer {
 
 	public float getMouseX() {
 		return cam.unproject(mouseCoord.set(Gdx.input.getX(), Gdx.input.getY(), 0)).x;
-		//return mouseCoord.x;
 	}
 
 	public float getMouseY() {
 		return cam.unproject(mouseCoord.set(Gdx.input.getX(), Gdx.input.getY(), 0)).y;
-		//return mouseCoord.y;
 	}
 }

@@ -44,7 +44,7 @@ public class WaybackDungeon extends ApplicationAdapter {
 
 	private void initCam() {
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 800);
+		camera.setToOrtho(false, 1280, 720);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class WaybackDungeon extends ApplicationAdapter {
 		if (tile == null) {
 			return;
 		}
-		batch.draw(tile.getCurrentLook(), tile.getX() * 64, tile.getY() * 64);
+		batch.draw(tile.getCurrentLook(), (int) tile.getX(), (int) tile.getY());
 	}
 	
 	@Override

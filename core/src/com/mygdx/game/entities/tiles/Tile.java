@@ -4,12 +4,9 @@ import com.mygdx.game.entities.VisibleObject;
 
 public abstract class Tile extends VisibleObject {
 	private boolean solid;
-	private int x;
-	private int y;
 
 	public Tile(int x, int y) {
-		this.x = x;
-		this.y = y;
+		makeBoundingBox(x, y);
 		loadLook();
 	}
 
@@ -19,13 +16,5 @@ public abstract class Tile extends VisibleObject {
 
 	public void setSolid(boolean solid) {
 		this.solid = solid;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
 	}
 }
