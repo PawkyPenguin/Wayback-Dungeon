@@ -3,6 +3,7 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.entities.collisionHandling.BoundingBox;
 import com.mygdx.game.entities.collisionHandling.BoundingBoxRectangle;
+import com.mygdx.game.entities.collisionHandling.Coordinate;
 import com.mygdx.game.entities.collisionHandling.EnumDirection;
 import com.mygdx.game.view.Look;
 
@@ -50,5 +51,9 @@ public abstract class VisibleObject {
 	}
 	public BoundingBox getBoundingBox() {
 		return boundingBox;
+	}
+
+	public void injectPosition(Coordinate coord) {
+		makeBoundingBox(coord.getX(), coord.getY());
 	}
 }

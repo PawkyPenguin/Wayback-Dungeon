@@ -16,4 +16,32 @@ public class Direction {
 	public static EnumDirection getVerticalFromDelta(int deltaY) {
 		return verticalDirection[deltaY + 1];
 	}
+
+	public static EnumDirection turnRight(EnumDirection dir) {
+		switch(dir) {
+			case UP:
+				return EnumDirection.RIGHT;
+			case LEFT:
+				return EnumDirection.UP;
+			case DOWN:
+				return EnumDirection.LEFT;
+			case RIGHT:
+				return EnumDirection.DOWN;
+		}
+		return EnumDirection.NONE;
+	}
+
+	public static EnumDirection turnLeft(EnumDirection dir) {
+		switch(dir) {
+			case UP:
+				return EnumDirection.LEFT;
+			case LEFT:
+				return EnumDirection.DOWN;
+			case DOWN:
+				return EnumDirection.RIGHT;
+			case RIGHT:
+				return EnumDirection.UP;
+		}
+		return EnumDirection.NONE;
+	}
 }

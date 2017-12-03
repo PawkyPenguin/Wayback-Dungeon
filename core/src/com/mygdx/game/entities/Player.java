@@ -9,9 +9,13 @@ import com.mygdx.game.view.LivingLook;
 import com.mygdx.game.view.spriteEnums.LookEnum;
 
 public class Player extends Entity {
-	final static int SPEED = 300;
+	final static int SPEED = 1000;
 	final static int width = 32;
 	final static int height = 32;
+
+	public Player() {
+		super();
+	}
 
 	public Player(double x, double y) {
 		super(x, y);
@@ -44,6 +48,7 @@ public class Player extends Entity {
 			deltaY--;
 		}
 		// TODO: Use some kind of space-dividing tree instead of iterating over all objects.
+		// FIXME: Outsource this to some other class.
 		getBoundingBox().moveX(timeSinceLastFrame * deltaX * SPEED);
 		outer: for (FloorTile[] row : getLevel().getFloor()) {
 			for (FloorTile floorTile : row) {
@@ -60,6 +65,7 @@ public class Player extends Entity {
 				}
 			}
 		}
+		updateCamera();
 	}
 
 	private boolean isKeyPressed(int keycode) {

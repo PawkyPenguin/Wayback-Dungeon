@@ -15,8 +15,9 @@ import com.mygdx.game.model.Level;
 import java.util.ArrayList;
 
 public class WaybackDungeon extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture background;
+	private SpriteBatch batch;
+	private SpriteBatch backgroundBatch;
+	private Texture background;
 	private OrthographicCamera camera;
 	private Game game;
 	private long lastFrame;
@@ -29,17 +30,20 @@ public class WaybackDungeon extends ApplicationAdapter {
 		initCam();
 		inputContainer = new InputContainer(camera);
 		batch = new SpriteBatch();
+		backgroundBatch = new SpriteBatch();
 		background = new Texture("background.png");
 
 		// initialize player
-		Player player = new Player(200, 200);
+		Player player = new Player();
 		player.setInputContainer(inputContainer);
+		player.registerCamera(camera);
 		entities.add(player);
 		lastFrame = System.currentTimeMillis();
 
 		// initialize game
 		game = new Game();
-		player.injectLevel(game.getLevel());
+		game.setPlayer(player);
+		game.begin();
 	}
 
 	private void initCam() {
@@ -61,9 +65,9 @@ public class WaybackDungeon extends ApplicationAdapter {
 	}
 
 	private void draw() {
+		drawBackground();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		drawBackground();
 		drawGame();
 		for (Entity e : entities) {
 			drawEntity(e);
@@ -73,7 +77,9 @@ public class WaybackDungeon extends ApplicationAdapter {
 
 
 	private void drawBackground() {
-		batch.draw(background, 0, 0);
+		backgroundBatch.begin();
+		backgroundBatch.draw(background, 0, 0);
+		backgroundBatch.end();
 	}
 
 	private void drawEntity(Entity e) {
@@ -102,6 +108,7 @@ public class WaybackDungeon extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		backgroundBatch.dispose();
 		background.dispose();
 		for (Entity e : entities) {
 			e.getCurrentLook().dispose();

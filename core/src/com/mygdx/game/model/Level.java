@@ -1,27 +1,29 @@
 package com.mygdx.game.model;
 
-import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.Player;
-import com.mygdx.game.entities.tiles.FloorTile;
-
 import java.util.ArrayList;
 
+import com.mygdx.game.entities.Entity;
+import com.mygdx.game.entities.collisionHandling.Coordinate;
+import com.mygdx.game.entities.collisionHandling.EnumDirection;
+import com.mygdx.game.entities.tiles.FloorTile;
+import com.mygdx.game.generation.LevelGenerator;
+
 public class Level {
-	private Player player;
 	private ArrayList<Entity> monsters;
 	private FloorTile[][] floor;
+	private static final int width = 30;
+	private static final int height = 30;
+	private LevelGenerator generator;
+	private Coordinate playerStart;
 
 	public Level() {
-		floor = new FloorTile[20][20];
-		monsters = new ArrayList<>();
-		for (int i = 0; i < floor.length; i++) {
-			FloorTile[] row = floor[i];
-			for (int j = 0; j < row.length; j++) {
-				if (Math.random() > 0.8) {
-					floor[i][j] = new FloorTile(i, j);
-				}
-			}
-		}
+		generator = new LevelGenerator();
+	}
+
+	public void createFloor() {
+		monsters = new ArrayList<Entity>();
+		floor = generator.generateFloor();
+		playerStart = generator.getPlayerStart();
 	}
 
 	public void tick(long timeSinceLastFrame) {
@@ -43,4 +45,8 @@ public class Level {
 		return floor;
 	}
 
+	public Coordinate choosePlayerPosition() {
+		// FIXME: Having a conversion here is just straight up stupid. Probably fix this as soon as my promille count is lower than my amount of awake brain cells.
+		return new Coordinate(playerStart.getX() * 64, playerStart.getY() * 64);
+	}
 }
