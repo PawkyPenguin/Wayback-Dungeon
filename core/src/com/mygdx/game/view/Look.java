@@ -21,6 +21,12 @@ public abstract class Look {
 		current = t;
 	}
 
+	public void dispose() {
+		for (Texture t : sprites.values()) {
+			t.dispose();
+		}
+	}
+
 	public Texture getCurrent() {
 		return current;
 	}

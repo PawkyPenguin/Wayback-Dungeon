@@ -4,6 +4,7 @@ import com.mygdx.game.entities.collisionHandling.Coordinate;
 import com.mygdx.game.entities.collisionHandling.EnumDirection;
 import com.mygdx.game.entities.collisionHandling.IntCoordinate;
 import com.mygdx.game.entities.tiles.FloorTile;
+import com.mygdx.game.entities.tiles.NullTile;
 
 public class LevelGenerator {
 	private IntCoordinate start = new IntCoordinate(0, 0);
@@ -29,7 +30,7 @@ public class LevelGenerator {
 			{ Symbol.PUSH, Symbol.S, Symbol.POP, Symbol.R, Symbol.S },
 			{ Symbol.PUSH, Symbol.L, Symbol.S, Symbol.POP, Symbol.PUSH, Symbol.F, Symbol.S, Symbol.POP, Symbol.R, Symbol.S }
 		};
-		double[] probabilities = {0.6, 0.1, 0.1, 0.10, 0.10, 0};
+		double[] probabilities = {0.5, 0.1, 0.1, 0.1, 0.1, 0.1};
 		generatorGrammar = new StochasticGrammar(Symbol.S, leftHandSides, rightHandSides, probabilities);
 	}
 
@@ -58,6 +59,8 @@ public class LevelGenerator {
 			for (int j = 1; j < row.length - 1; j++) {
 				if (freeTiles[i - 1][j - 1] == null || !freeTiles[i - 1][j - 1]) {
 					floor[i][j] = new FloorTile(i, j);
+				} else {
+					floor[i][j] = new NullTile(i, j);
 				}
 			}
 		}

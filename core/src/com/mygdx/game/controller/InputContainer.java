@@ -9,12 +9,12 @@ public class InputContainer {
 	public Vector3 mouseCoord;
 	private Camera cam;
 
-	public InputContainer(Camera cam){
+	public InputContainer(Camera cam) {
 		this.cam = cam;
 		mouseCoord = new Vector3();
 	}
 
-	public void tick() {
+	public void update() {
 		mouseCoord = cam.unproject(mouseCoord.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 	}
 

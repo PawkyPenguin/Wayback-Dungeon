@@ -2,9 +2,10 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mygdx.game.WaybackDungeon;
 import com.mygdx.game.entities.collisionHandling.BoundingBoxRectangle;
 import com.mygdx.game.entities.collisionHandling.Direction;
-import com.mygdx.game.entities.tiles.FloorTile;
+import com.mygdx.game.entities.tiles.Tile;
 import com.mygdx.game.view.LivingLook;
 import com.mygdx.game.view.spriteEnums.LookEnum;
 
@@ -32,7 +33,7 @@ public class Player extends Entity {
 	}
 
 	@Override
-	public void tick(double timeSinceLastFrame) {
+	public void visitTick(double timeSinceLastFrame) {
 		int deltaX = 0;
 		int deltaY = 0;
 		if (isKeyPressed(Input.Keys.LEFT)) {
@@ -50,18 +51,18 @@ public class Player extends Entity {
 		// TODO: Use some kind of space-dividing tree instead of iterating over all objects.
 		// FIXME: Outsource this to some other class.
 		getBoundingBox().moveX(timeSinceLastFrame * deltaX * SPEED);
-		outer: for (FloorTile[] row : getLevel().getFloor()) {
-			for (FloorTile floorTile : row) {
-				if (floorTile != null && floorTile.collidesWith(this)) {
-					floorTile.collisionDisplace(this, Direction.getHorizontalFromDelta(deltaX));
+		for (Tile[] row : getLevel().getFloor()) {
+			for (Tile tile : row) {
+				if (tile.collidesWith(this)) {
+					tile.collisionDisplace(this, Direction.getHorizontalFromDelta(deltaX));
 				}
 			}
 		}
 		getBoundingBox().moveY(timeSinceLastFrame * deltaY * SPEED);
-		outer: for (FloorTile[] row : getLevel().getFloor()) {
-			for (FloorTile floorTile : row) {
-				if (floorTile != null && floorTile.collidesWith(this)) {
-					floorTile.collisionDisplace(this, Direction.getVerticalFromDelta(deltaY));
+		for (Tile[] row : getLevel().getFloor()) {
+			for (Tile tile : row) {
+				if (tile.collidesWith(this)) {
+					tile.collisionDisplace(this, Direction.getVerticalFromDelta(deltaY));
 				}
 			}
 		}
@@ -70,5 +71,10 @@ public class Player extends Entity {
 
 	private boolean isKeyPressed(int keycode) {
 		return Gdx.input.isKeyPressed(keycode);
+	}
+
+	@Override
+	public void requestDraw(WaybackDungeon w) {
+		w.draw(this);
 	}
 }

@@ -5,14 +5,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.controller.InputContainer;
-import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Player;
-import com.mygdx.game.entities.tiles.FloorTile;
-import com.mygdx.game.entities.tiles.Tile;
+import com.mygdx.game.entities.VisibleObject;
 import com.mygdx.game.model.Game;
-import com.mygdx.game.model.Level;
-
-import java.util.ArrayList;
 
 public class WaybackDungeon extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -21,12 +16,10 @@ public class WaybackDungeon extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private Game game;
 	private long lastFrame;
-	private ArrayList<Entity> entities;
 	private InputContainer inputContainer;
 
 	@Override
 	public void create () {
-		entities = new ArrayList<Entity>();
 		initCam();
 		inputContainer = new InputContainer(camera);
 		batch = new SpriteBatch();
@@ -37,7 +30,6 @@ public class WaybackDungeon extends ApplicationAdapter {
 		Player player = new Player();
 		player.setInputContainer(inputContainer);
 		player.registerCamera(camera);
-		entities.add(player);
 		lastFrame = System.currentTimeMillis();
 
 		// initialize game
@@ -52,29 +44,23 @@ public class WaybackDungeon extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () {
-		inputContainer.tick();
+	public void render() {
+		inputContainer.update();
 		camera.update();
 		draw();
 		long thisFrame = System.currentTimeMillis();
 		double timeSinceLastFrame = (thisFrame - lastFrame) / 1000.0;
 		lastFrame = thisFrame;
-		for (Entity e : entities) {
-			e.tick(timeSinceLastFrame);
-		}
+		game.visitTick(timeSinceLastFrame);
 	}
 
 	private void draw() {
 		drawBackground();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		drawGame();
-		for (Entity e : entities) {
-			drawEntity(e);
-		}
+		game.requestDraw(this);
 		batch.end();
 	}
-
 
 	private void drawBackground() {
 		backgroundBatch.begin();
@@ -82,36 +68,15 @@ public class WaybackDungeon extends ApplicationAdapter {
 		backgroundBatch.end();
 	}
 
-	private void drawEntity(Entity e) {
-		batch.draw(e.getCurrentLook(), (int) e.getX(), (int) e.getY());
+	public void draw(VisibleObject v) {
+		batch.draw(v.getCurrentLook(), (int) v.getX(), (int) v.getY());
 	}
 
-	private void drawGame() {
-		Level level = game.getLevel();
-		for (Entity m : level.getMonsters()) {
-			drawEntity(m);
-		}
-		for (FloorTile[] row : level.getFloor()) {
-			for (FloorTile tile : row) {
-				drawTile(tile);
-			}
-		}
-	}
-
-	public void drawTile(Tile tile) {
-		if (tile == null) {
-			return;
-		}
-		batch.draw(tile.getCurrentLook(), (int) tile.getX(), (int) tile.getY());
-	}
-	
 	@Override
 	public void dispose () {
 		batch.dispose();
 		backgroundBatch.dispose();
 		background.dispose();
-		for (Entity e : entities) {
-			e.getCurrentLook().dispose();
-		}
+		game.dispose();
 	}
 }

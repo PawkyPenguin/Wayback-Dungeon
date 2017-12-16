@@ -7,12 +7,16 @@ import com.mygdx.game.entities.collisionHandling.Coordinate;
 import com.mygdx.game.entities.collisionHandling.EnumDirection;
 import com.mygdx.game.view.Look;
 
-public abstract class VisibleObject {
+public abstract class VisibleObject implements Drawable, Tickable{
 	private Look look;
 	private BoundingBoxRectangle boundingBox;
 
 	public VisibleObject() {
 		loadLook();
+	}
+
+	public void disposeLook() {
+		look.dispose();
 	}
 
 	protected abstract void loadLook();
@@ -31,7 +35,6 @@ public abstract class VisibleObject {
 		return look.getCurrent();
 	}
 
-
 	public double getX() {
 		return boundingBox.getX();
 	}
@@ -39,8 +42,6 @@ public abstract class VisibleObject {
 	public double getY() {
 		return boundingBox.getY();
 	}
-
-	public abstract void tick(double timeSinceLastFrame);
 
 	public boolean collidesWith(VisibleObject v) {
 		return boundingBox.collidesWith(v.getBoundingBox());
