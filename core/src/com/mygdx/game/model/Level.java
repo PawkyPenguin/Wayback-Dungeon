@@ -36,6 +36,7 @@ public class Level implements Tickable, Drawable {
 		playerStart = generator.getPlayerStart();
 	}
 
+	// Sorry not sorry
 	private Iterable<? extends VisibleObject> iterateVisibles() {
 		return new Iterable<VisibleObject>() {
 			public Iterator<VisibleObject> iterator() {
@@ -52,13 +53,8 @@ public class Level implements Tickable, Drawable {
 	
 
 	public void visitTick(double timeSinceLastFrame) {
-		for (Tile[] row : floor) {
-			for (Tile tile : row) {
-				tile.visitTick(timeSinceLastFrame);
-			}
-		}
-		for (Entity m : entities) {
-			m.visitTick(timeSinceLastFrame);
+		for (VisibleObject v : iterateVisibles()) {
+			v.visitTick(timeSinceLastFrame);
 		}
 	}
 
@@ -77,13 +73,8 @@ public class Level implements Tickable, Drawable {
 
 	@Override
 	public void requestDraw(WaybackDungeon w) {
-		for (Tile[] row : floor) {
-			for (Tile tile : row) {
-				tile.requestDraw(w);
-			}
-		}
-		for (Entity m : entities) {
-			m.requestDraw(w);
+		for (VisibleObject v : iterateVisibles()) {
+			v.requestDraw(w);
 		}
 	}
 }
